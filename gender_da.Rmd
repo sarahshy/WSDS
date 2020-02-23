@@ -73,3 +73,4 @@ enroll.clean$Level.of.education %>% levels
 - We have 40 countries observed over 5 years
 - 3 levels of education plus total (Bachelor, Master, Doctoral, and Total Grad)
 
+### Some analysis
