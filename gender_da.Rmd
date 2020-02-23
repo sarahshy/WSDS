@@ -62,9 +62,14 @@ enroll.clean <- enroll %>% select(-c(Sex, COUNTRY, FIELD, COUNTRY_ORIGIN, Countr
 
 ### EDA
 
-Each case represents enrollment in each country at a specific year, STEM field, and program level
+- Each case represents enrollment in each country at a specific year, STEM field, and program level.
 
 ```{r}
-dim(enroll.clean$Y)
+enroll.clean$Country %>% nlevels
+enroll.clean$Year %>% table
+enroll.clean$Level.of.education %>% levels
 ```
+
+- We have 40 countries observed over 5 years
+- 3 levels of education plus total (Bachelor, Master, Doctoral, and Total Grad)
 
