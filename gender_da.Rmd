@@ -18,7 +18,27 @@ library(tidyverse)
 # load data
 math.pisa <- read.csv("oecd_pisa_math.csv")
 sci.pisa <- read.csv("oecd_pisa_science.csv")
+grads <- read.csv("2017_grads_field.csv")
+earn.deg <- read.csv("earnings_degree.csv")
+earn.numeracy <- read.csv("earnings_numeracylevel.csv")
+enroll <- read.csv("enrollment.csv")
 ```
+
+For more data, see <https://stats.oecd.org/>
+
+The data:
+- Enrollment in STEM grad programs, broken down by gender, field, level of education
+- PISA science scores  
+- PISA math scores  
+- Graduation broken down by degree, field, gender (2017)  
+- Earnings broken down by degree, gender, age (values are percentages, 100 refers to the average earnings of all people who completed secondary school)  
+- Earnings broken down by numeracy level, gender (all ages 25-64, data from 2012 and 2015)
+
+Enrollment data comes from <https://stats.oecd.org/> table called "Enrolment by field"
 
 Dataset documentation can be found [here (math)](https://data.oecd.org/pisa/mathematics-performance-pisa.htm)
 and [here (science)](https://data.oecd.org/pisa/science-performance-pisa.htm#indicator-chart)
+
+Share of graduates by field data comes from [here](https://stats.oecd.org/viewhtml.aspx?datasetcode=EAG_GRAD_ENTR_FIELD&lang=en#)
+
+Earnings by numeracy level found [here](https://stats.oecd.org/viewhtml.aspx?datasetcode=EAG_EA_SKILLS&lang=en#)
