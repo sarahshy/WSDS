@@ -14,3 +14,8 @@ rm(list = ls())
 library(tidyverse)
 ```
 
+```{r}
+# load data
+dat <- read.csv("oecd_math.csv")
+```
+
