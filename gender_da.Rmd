@@ -16,6 +16,9 @@ library(tidyverse)
 
 ```{r}
 # load data
-dat <- read.csv("oecd_math.csv")
+math.pisa <- read.csv("oecd_pisa_math.csv")
+sci.pisa <- read.csv("oecd_pisa_science.csv")
 ```
 
+Dataset documentation can be found [here (math)](https://data.oecd.org/pisa/mathematics-performance-pisa.htm)
+and [here (science)](https://data.oecd.org/pisa/science-performance-pisa.htm#indicator-chart)
