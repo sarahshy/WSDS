@@ -16,7 +16,7 @@ library(tidyverse)
 
 ```{r}
 # load data
-enroll <- read.csv("enrollment.csv")
+enroll <- read.csv("Data/enrollment.csv")
 math.pisa <- read.csv("oecd_pisa_math.csv")
 sci.pisa <- read.csv("oecd_pisa_science.csv")
 grads <- read.csv("2017_grads_field.csv")
@@ -74,3 +74,29 @@ enroll.clean$Level.of.education %>% levels
 - 3 levels of education plus total (Bachelor, Master, Doctoral, and Total Grad)
 
 ### Some analysis
+
+#### Most recent 2017 data
+```{r}
+enroll17 <-
+  enroll.clean %>%
+  filter(Year == 2017)
+
+enroll.by.gender <-
+  enroll17 %>%
+  group_by(Country, SEX) %>%
+  summarise(enrollment = sum(Value)) %>%
+  pivot_wider(names_from = SEX, values_from = enrollment, names_prefix = "enroll_") %>%
+  mutate(enroll_Total = sum(enroll_F, enroll_M), prop_F = enroll_F/sum(enroll_F, enroll_M))
+# Costa Rica, Germany, Mexico, Russia have NA's
+```
+
+```{r}
+# plot proportion of females enrolling in STEM grad programs in 2017
+ggplot(enroll.by.gender, aes(y = prop_F)) + geom_boxplot() + theme_bw() + 
+```
+
+```{r}
+# change over year, across all countries?
+```
+
+
