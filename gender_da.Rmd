@@ -1,0 +1,16 @@
+---
+title: "Gender Equality DA"
+author: "Sarah Shy"
+date: "2/22/2020"
+output: html_document
+---
+
+# Front matter
+```{r}
+# clear environment
+rm(list = ls())
+
+# load libraries
+library(tidyverse)
+```
+
