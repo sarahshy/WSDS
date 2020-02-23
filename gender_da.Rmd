@@ -14,7 +14,7 @@ rm(list = ls())
 library(tidyverse)
 ```
 
-```{r}
+```{r, message = F, warning = F}
 # load data
 
 enroll <- read.csv("Data/enrollment.csv")
@@ -93,7 +93,7 @@ enroll.by.gender <-
 
 ```{r}
 # plot proportion of females enrolling in STEM grad programs in 2017
-ggplot(enroll.by.gender, aes(y = prop_F)) + geom_boxplot() + theme_bw() + 
+ggplot(enroll.by.gender, aes(y = prop_F)) + geom_boxplot() + theme_bw() + ggtitle("Proportion of females enrolling in STEM grad programs")
 ```
 
 ```{r}
