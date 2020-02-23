@@ -16,12 +16,12 @@ library(tidyverse)
 
 ```{r}
 # load data
+enroll <- read.csv("enrollment.csv")
 math.pisa <- read.csv("oecd_pisa_math.csv")
 sci.pisa <- read.csv("oecd_pisa_science.csv")
 grads <- read.csv("2017_grads_field.csv")
 earn.deg <- read.csv("earnings_degree.csv")
 earn.numeracy <- read.csv("earnings_numeracylevel.csv")
-enroll <- read.csv("enrollment.csv")
 ```
 
 For more data, see <https://stats.oecd.org/>
@@ -42,3 +42,29 @@ and [here (science)](https://data.oecd.org/pisa/science-performance-pisa.htm#ind
 Share of graduates by field data comes from [here](https://stats.oecd.org/viewhtml.aspx?datasetcode=EAG_GRAD_ENTR_FIELD&lang=en#)
 
 Earnings by numeracy level found [here](https://stats.oecd.org/viewhtml.aspx?datasetcode=EAG_EA_SKILLS&lang=en#)
+
+
+# Enrollment in grad programs
+
+### Clean data
+```{r}
+# Clean data
+
+# create reference table for flags
+# I don't really know what these mean
+tbl.flags <- as.data.frame(unique(enroll$Flag.Codes)) %>% bind_cols(as.data.frame(unique(enroll$Flags)))
+
+
+# SEX and Sex columns are identical, remove Sex
+# remove other redundant, useless variables
+enroll.clean <- enroll %>% select(-c(Sex, COUNTRY, FIELD, COUNTRY_ORIGIN, Country.of.origin, ISC11_LEVEL, ISC11P_CAT, Category.of.education, YEAR, Unit.Code, Unit, PowerCode.Code, PowerCode, Reference.Period.Code, Reference.Period))
+```
+
+### EDA
+
+Each case represents enrollment in each country at a specific year, STEM field, and program level
+
+```{r}
+dim(enroll.clean$Y)
+```
+
