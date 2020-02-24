@@ -21,7 +21,7 @@ enroll <- read.csv("Data/enrollment.csv")
 math.pisa <- read.csv("Data/oecd_pisa_math.csv")
 sci.pisa <- read.csv("Data/oecd_pisa_science.csv")
 grads <- read.csv("Data/2017_grads_field.csv")
-earn.deg <- read.csv("Data/earnings_degree.csv")
+earn.deg1 <- read.csv("Data/earnings_degree.csv")
 earn.numeracy <- read.csv("Data/earnings_numeracylevel.csv")
 ```
 
