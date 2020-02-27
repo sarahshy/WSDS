@@ -76,7 +76,7 @@ enroll.clean$Level.of.education %>% levels
 
 ### Some analysis
 
-#### Most recent 2017 data
+#### Enrollment in Graduate Programs
 ```{r}
 enroll17 <-
   enroll.clean %>%
@@ -100,4 +100,9 @@ ggplot(enroll.by.gender, aes(y = prop_F)) + geom_boxplot() + theme_bw() + ggtitl
 # change over year, across all countries?
 ```
 
+```{r}
+#mmath pisa
+
+math.pisa.clean %>% group_by(subject) %>% summarise(meanScore = mean(value), count = n())
+```
 
