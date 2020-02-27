@@ -33,11 +33,11 @@ earn.numeracy <- read.csv("Data/earnings_numeracylevel.csv")
 # I don't really know what these mean, but keep them just in case
 tbl.flags <- as.data.frame(unique(enroll$Flag.Codes)) %>% bind_cols(as.data.frame(unique(enroll$Flags)))
 
-write.csv(tbl.flags, "Data/data_flags.csv")
+write.csv(tbl.flags, "Data/data_flags.csv", row.names = F)
 
 tbl.flags <- as.data.frame(unique(earn.deg$Flag.Codes)) %>% bind_cols(as.data.frame(unique(earn.deg$Flags)))
 
-write.csv(tbl.flags, "Data/data_flags_earn_deg.csv")
+write.csv(tbl.flags, "Data/data_flags_earn_deg.csv", row.names = F)
 ```
 
 ```{r}
@@ -47,7 +47,7 @@ enroll.clean <- enroll %>% select(-c(Sex, COUNTRY, FIELD, COUNTRY_ORIGIN, Countr
 names(enroll.clean) <- tolower(names(enroll.clean))
 
 # write clean data to csv
-write.csv(enroll.clean, "Data/CLEAN_enrollment.csv")
+write.csv(enroll.clean, "Data/CLEAN_enrollment.csv", row.names = F)
 ```
 
 # Clean Math PISA data
@@ -59,7 +59,7 @@ names(math.pisa)[names(math.pisa) == "value"] <- "mean.score"
 math.pisa.clean <- math.pisa %>% select(location, subject, time, mean.score)
 
 # write clean data to csv
-write.csv(math.pisa.clean, "Data/CLEAN_pisa_math.csv")
+write.csv(math.pisa.clean, "Data/CLEAN_pisa_math.csv", row.names = F)
 ```
 
 # Clean Science PISA data
@@ -71,7 +71,7 @@ names(sci.pisa)[names(sci.pisa) == "value"] <- "mean.score"
 sci.pisa.clean <- sci.pisa %>% select(location, subject, time, mean.score)
 
 # write clean data to csv
-write.csv(sci.pisa.clean, "Data/CLEAN_pisa_science.csv")
+write.csv(sci.pisa.clean, "Data/CLEAN_pisa_science.csv", row.names = F)
 ```
 
 # Clean Graduation data
@@ -82,7 +82,7 @@ country.codes <- grads[,c(2,1)] %>%
   distinct
 names(country.codes) <- c("Country", "Code")
 
-write.csv("country.codes", "Data/country_codes.csv")
+write.csv("country.codes", "Data/country_codes.csv", row.names = F)
 ```
 
 ```{r}
@@ -90,7 +90,7 @@ grads.clean <- grads %>% select(Country., SEX, Field, Level.of.education, YEAR, 
 names(grads.clean) <- tolower(names(grads.clean))
 names(grads.clean)[names(grads.clean) == "country." | names(grads.clean) == "value"] <- c("country", "percent")
 
-write.csv(grads.clean, "Data/CLEAN_2017_grads_field.csv")
+write.csv(grads.clean, "Data/CLEAN_2017_grads_field.csv", row.names = F)
 ```
 
 # Clean Earnings by Degree data
@@ -102,7 +102,7 @@ names(earn.deg.clean)[names(earn.deg.clean) == "isc11a.1"] <- "degree"
 names(earn.deg.clean)[names(earn.deg.clean) == "reference.period"] <- "year"
 names(earn.deg.clean)[names(earn.deg.clean) == "value"] <- "earn.month"
 
-write.csv(earn.deg.clean, "Data/CLEAN_earnings_degree.csv")
+write.csv(earn.deg.clean, "Data/CLEAN_earnings_degree.csv", row.names = F)
 ```
 
 # Clean Earnings by Numeracy Level data
@@ -113,5 +113,5 @@ names(earn.numeracy.clean) <- tolower(names(earn.numeracy.clean))
 names(earn.numeracy.clean)[names(earn.numeracy.clean) == "category"] <- "numeracy.level"
 names(earn.numeracy.clean)[names(earn.numeracy.clean) == "value"] <- "earn.month"
 
-write.csv(earn.numeracy.clean, "Data/CLEAN_earnings_numeracy.csv")
+write.csv(earn.numeracy.clean, "Data/CLEAN_earnings_numeracy.csv", row.names = F)
 ```
