@@ -8,6 +8,10 @@
 ### Research questions
 - enrollment vs graduation rate
 
+### Datasets
+- country_codes.csv stores country codes (i.e. AUS is Australia)
+- data_flags.csv stores flags guide from enrollment and graduation data (not very important)
 
+### Updates
 
-2/24 cleaned datasets
+(Feb 27) Sarah: cleaned all datasets
