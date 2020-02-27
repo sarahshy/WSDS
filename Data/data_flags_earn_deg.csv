@@ -1,0 +1,7 @@
+"","unique(earn.deg$Flag.Codes)","unique(earn.deg$Flags)"
+"1","",""
+"2","m","Missing data"
+"3","x","Data included in another category"
+"4","w","Includes data from another category"
+"5","c","Data below the publication limit"
+"6","r","Data below a reliability threshold"

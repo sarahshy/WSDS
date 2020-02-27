@@ -1,0 +1,5 @@
+"","unique(enroll$Flag.Codes)","unique(enroll$Flags)"
+"1","",""
+"2","x","Data included in another category"
+"3","M","Missing value; data cannot exist"
+"4","w","Includes data from another category"

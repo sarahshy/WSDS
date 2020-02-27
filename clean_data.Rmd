@@ -1,0 +1,117 @@
+---
+title: "Clean WSDS Data"
+author: "Sarah Shy"
+date: "2/27/2020"
+output: html_document
+---
+
+# Front matter
+```{r}
+# load libraries
+
+library(dplyr)
+```
+
+
+```{r}
+# load data
+
+enroll <- read.csv("Data/enrollment.csv")
+math.pisa <- read.csv("Data/oecd_pisa_math.csv")
+sci.pisa <- read.csv("Data/oecd_pisa_science.csv")
+grads <- read.csv("Data/2017_grads_field.csv")
+earn.deg <- read.csv("Data/earnings_degree.csv")
+earn.numeracy <- read.csv("Data/earnings_numeracylevel.csv")
+```
+
+# Clean enrollment data
+
+```{r}
+# Clean data
+
+# create reference table for flags
+# I don't really know what these mean, but keep them just in case
+tbl.flags <- as.data.frame(unique(enroll$Flag.Codes)) %>% bind_cols(as.data.frame(unique(enroll$Flags)))
+
+write.csv(tbl.flags, "Data/data_flags.csv")
+
+tbl.flags <- as.data.frame(unique(earn.deg$Flag.Codes)) %>% bind_cols(as.data.frame(unique(earn.deg$Flags)))
+
+write.csv(tbl.flags, "Data/data_flags_earn_deg.csv")
+```
+
+```{r}
+# SEX and Sex columns are identical, remove Sex
+# remove other redundant, useless variables
+enroll.clean <- enroll %>% select(-c(Sex, COUNTRY, FIELD, COUNTRY_ORIGIN, Country.of.origin, ISC11_LEVEL, ISC11P_CAT, Category.of.education, YEAR, Unit.Code, Unit, PowerCode.Code, PowerCode, Reference.Period.Code, Reference.Period))
+names(enroll.clean) <- tolower(names(enroll.clean))
+
+# write clean data to csv
+write.csv(enroll.clean, "Data/CLEAN_enrollment.csv")
+```
+
+# Clean Math PISA data
+
+```{r}
+# rename, select useful columns
+names(math.pisa) <- tolower(names(math.pisa))
+names(math.pisa)[names(math.pisa) == "value"] <- "mean.score"
+math.pisa.clean <- math.pisa %>% select(location, subject, time, mean.score)
+
+# write clean data to csv
+write.csv(math.pisa.clean, "Data/CLEAN_pisa_math.csv")
+```
+
+# Clean Science PISA data
+
+```{r}
+# rename, select useful columns
+names(sci.pisa) <- tolower(names(sci.pisa))
+names(sci.pisa)[names(sci.pisa) == "value"] <- "mean.score"
+sci.pisa.clean <- sci.pisa %>% select(location, subject, time, mean.score)
+
+# write clean data to csv
+write.csv(sci.pisa.clean, "Data/CLEAN_pisa_science.csv")
+```
+
+# Clean Graduation data
+
+```{r}
+# store table with country codes
+country.codes <- grads[,c(2,1)] %>%
+  distinct
+names(country.codes) <- c("Country", "Code")
+
+write.csv("country.codes", "Data/country_codes.csv")
+```
+
+```{r}
+grads.clean <- grads %>% select(Country., SEX, Field, Level.of.education, YEAR, Value, Flags)
+names(grads.clean) <- tolower(names(grads.clean))
+names(grads.clean)[names(grads.clean) == "country." | names(grads.clean) == "value"] <- c("country", "percent")
+
+write.csv(grads.clean, "Data/CLEAN_2017_grads_field.csv")
+```
+
+# Clean Earnings by Degree data
+
+```{r}
+earn.deg.clean <- earn.deg %>% select(Country, ISC11A.1, SEX, Age, Reference.Period, Value, Flags)
+names(earn.deg.clean) <- tolower(names(earn.deg.clean))
+names(earn.deg.clean)[names(earn.deg.clean) == "isc11a.1"] <- "degree"
+names(earn.deg.clean)[names(earn.deg.clean) == "reference.period"] <- "year"
+names(earn.deg.clean)[names(earn.deg.clean) == "value"] <- "earn.month"
+
+write.csv(earn.deg.clean, "Data/CLEAN_earnings_degree.csv")
+```
+
+# Clean Earnings by Numeracy Level data
+
+```{r}
+earn.numeracy.clean <- earn.numeracy %>% select(Country, SEX, Age, Category, YEAR, Value, Flags)
+names(earn.numeracy.clean) <- tolower(names(earn.numeracy.clean))
+names(earn.numeracy.clean)[names(earn.numeracy.clean) == "category"] <- "numeracy.level"
+names(earn.numeracy.clean)[names(earn.numeracy.clean) == "value"] <- "earn.month"
+
+write.csv(earn.numeracy.clean, "Data/CLEAN_earnings_numeracy.csv")
+```
