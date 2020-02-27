@@ -6,6 +6,7 @@
 
 
 ### Research questions
+- enrollment in grad programs by gender
 - enrollment vs graduation rate
 
 ### Datasets
@@ -14,4 +15,4 @@
 
 ### Updates
 
-(Feb 27) Sarah: cleaned all datasets
+(Feb 27) Sarah: cleaned all datasets. Made a couple cute little plots.
