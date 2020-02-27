@@ -3,3 +3,11 @@
 
 1. History of Women in Statistics
 2. Data-driven perspective on gender equality in STEM
+
+
+### Research questions
+- enrollment vs graduation rate
+
+
+
+2/24 cleaned datasets
