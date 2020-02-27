@@ -45,6 +45,7 @@ write.csv(tbl.flags, "Data/data_flags_earn_deg.csv", row.names = F)
 # remove other redundant, useless variables
 enroll.clean <- enroll %>% select(-c(Sex, COUNTRY, FIELD, COUNTRY_ORIGIN, Country.of.origin, ISC11_LEVEL, ISC11P_CAT, Category.of.education, YEAR, Unit.Code, Unit, PowerCode.Code, PowerCode, Reference.Period.Code, Reference.Period))
 names(enroll.clean) <- tolower(names(enroll.clean))
+names(enroll.clean)[names(enroll.clean) == "value"] <- "n.people"
 
 # write clean data to csv
 write.csv(enroll.clean, "Data/CLEAN_enrollment.csv", row.names = F)
