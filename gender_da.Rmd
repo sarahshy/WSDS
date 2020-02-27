@@ -6,23 +6,24 @@ output: html_document
 ---
 
 # Front matter
-```{r}
+```{r, message = F, warning = F}
 # clear environment
 rm(list = ls())
 
 # load libraries
 library(tidyverse)
+library(maps)
 ```
 
 ```{r, message = F, warning = F}
 # load data
 
-enroll <- read.csv("Data/enrollment.csv")
-math.pisa <- read.csv("Data/oecd_pisa_math.csv")
-sci.pisa <- read.csv("Data/oecd_pisa_science.csv")
-grads <- read.csv("Data/2017_grads_field.csv")
-earn.deg1 <- read.csv("Data/earnings_degree.csv")
-earn.numeracy <- read.csv("Data/earnings_numeracylevel.csv")
+enroll <- read.csv("Data/CLEAN_enrollment.csv")
+math.pisa <- read.csv("Data/CLEAN_pisa_math.csv")
+sci.pisa <- read.csv("Data/CLEAN_pisa_science.csv")
+grads <- read.csv("Data/CLEAN_2017_grads_field.csv")
+earn.deg1 <- read.csv("Data/CLEAN_earnings_degree.csv")
+earn.numeracy <- read.csv("Data/CLEAN_earnings_numeracy.csv")
 ```
 
 For more data, see <https://stats.oecd.org/>
@@ -47,46 +48,94 @@ Earnings by numeracy level found [here](https://stats.oecd.org/viewhtml.aspx?dat
 
 # Enrollment in grad programs
 
-### Clean data
-```{r}
-# Clean data
-
-# create reference table for flags
-# I don't really know what these mean
-tbl.flags <- as.data.frame(unique(enroll$Flag.Codes)) %>% bind_cols(as.data.frame(unique(enroll$Flags)))
-
-
-# SEX and Sex columns are identical, remove Sex
-# remove other redundant, useless variables
-enroll.clean <- enroll %>% select(-c(Sex, COUNTRY, FIELD, COUNTRY_ORIGIN, Country.of.origin, ISC11_LEVEL, ISC11P_CAT, Category.of.education, YEAR, Unit.Code, Unit, PowerCode.Code, PowerCode, Reference.Period.Code, Reference.Period))
-```
-
-### EDA
-
 - Each case represents enrollment in each country at a specific year, STEM field, and program level.
 
 ```{r}
-enroll.clean$Country %>% nlevels
-enroll.clean$Year %>% table
-enroll.clean$Level.of.education %>% levels
+names(enroll)
+enroll$country %>% nlevels
+enroll$year %>% table
+enroll$level.of.education %>% levels
+
+levels(enroll$level.of.education) <- c("Bachelor's or equivalent", "Master's or equivalent", "Doctoral of equivalent", "Total")
 ```
 
 - We have 40 countries observed over 5 years
 - 3 levels of education plus total (Bachelor, Master, Doctoral, and Total Grad)
 
-### Some analysis
+```{r}
+# enrollment by program level and gender
 
-#### Enrollment in Graduate Programs
+prop <-
+  enroll %>%
+  group_by(level.of.education, sex) %>%
+  summarise(count = sum(n.people, na.rm = T)) %>%
+  filter(level.of.education != "Total")
+
+ggplot(prop, aes(x = level.of.education, y = count, fill = sex)) +
+  geom_bar(stat = "identity", position = "fill") +
+  ggtitle("Enrollment by Level and Sex, 2013-2017") +
+  xlab("Program level") +
+  ylab("Proportion") +
+  theme_bw()
+```
+
+- There are more males than females enrolling in every degree level (STEM fields only)
+
+```{r}
+# enrollment of females in grad programs across years
+enroll.by.year <-
+  enroll %>%
+  group_by(year, sex) %>%
+  summarise(count = sum(n.people, na.rm = T))
+
+ggplot(enroll.by.year) +
+  geom_bar(aes(x = year, y = count, fill = sex), stat = "identity", position = "fill")
+
+enroll.by.country <- enroll %>% group_by(country, sex) %>% summarise(count = sum(n.people, na.rm = T)) %>%
+  pivot_wider(values_from = count, names_from = sex, names_prefix = "count_") %>%
+  mutate(prop_F = count_F/sum(count_F, count_M))
+
+# recode USA and UK
+enroll.by.country$country <- enroll.by.country$country %>% recode("United States" = "USA", "United Kingdom" = "UK")
+```
+
+- Enrollment has not changed between 2013 and 2017
+
+```{r}
+# prop of women enrollment by country
+library(rworldmap)
+map.world <- map_data(map="world")
+world.join <- left_join(map.world, enroll.by.country, by = c("region" = "country"))
+ggplot() +
+  geom_map(data = world.join, map = world.join, aes(map_id = region, x = long, y = lat, fill = prop_F)) +
+  scale_fill_gradient(low = "red", high = "green", guide = "colourbar") +
+  coord_equal() +
+  ggtitle("Proportion of Female enrollment in grad programs, 2013-2017")
+```
+
+```{r}
+enroll.by.country %>% arrange(desc(prop_F))
+```
+
+
+# Graduation from grad progams
+
+```{r}
+names(grads)
+```
+
+
+### (Old code chunks) Enrollment in Graduate Programs
 ```{r}
 enroll17 <-
-  enroll.clean %>%
-  filter(Year == 2017)
+  enroll %>%
+  filter(year == 2017)
 
 enroll.by.gender <-
   enroll17 %>%
-  group_by(Country, SEX) %>%
-  summarise(enrollment = sum(Value)) %>%
-  pivot_wider(names_from = SEX, values_from = enrollment, names_prefix = "enroll_") %>%
+  group_by(country, sex) %>%
+  summarise(enrollment = sum(n.people)) %>%
+  pivot_wider(names_from = sex, values_from = enrollment, names_prefix = "enroll_") %>%
   mutate(enroll_Total = sum(enroll_F, enroll_M), prop_F = enroll_F/sum(enroll_F, enroll_M))
 # Costa Rica, Germany, Mexico, Russia have NA's
 ```
@@ -103,6 +152,6 @@ ggplot(enroll.by.gender, aes(y = prop_F)) + geom_boxplot() + theme_bw() + ggtitl
 ```{r}
 #mmath pisa
 
-math.pisa.clean %>% group_by(subject) %>% summarise(meanScore = mean(value), count = n())
+math.pisa %>% group_by(subject) %>% summarise(meanScore = mean(mean.score), count = n())
 ```
 
