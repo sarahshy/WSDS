@@ -24,6 +24,20 @@ sci.pisa <- read.csv("Data/CLEAN_pisa_science.csv")
 grads <- read.csv("Data/CLEAN_2017_grads_field.csv")
 earn.deg1 <- read.csv("Data/CLEAN_earnings_degree.csv")
 earn.numeracy <- read.csv("Data/CLEAN_earnings_numeracy.csv")
+
+# load equality score data and clean
+equality<- read.csv("Data/equality.csv", skip = 1, header = T)
+years <- rep("yr", 14) %>% paste(c(2006:2018, 2020), sep = "")
+names(equality) <- c("country", "region", years)
+equality$country <- equality$country %>%
+  recode("United States" = "USA", "United Kingdom" = "UK", "Korea, Rep." = "Korea", "Russian Federation" = "Russia", "Slovakia" = "Slovak Republic")
+equality[equality == "N/A"] <- NA
+equality <- equality[complete.cases(equality),] # remove NA's
+
+equality <-
+  equality %>%
+  mutate_at(3:16, as.character) %>%
+  mutate_at(3:16, as.numeric)
 ```
 
 For more data, see <https://stats.oecd.org/>
@@ -51,15 +65,15 @@ Earnings by numeracy level found [here](https://stats.oecd.org/viewhtml.aspx?dat
 - Each case represents enrollment in each country at a specific year, STEM field, and program level.
 
 ```{r}
-names(enroll)
-enroll$country %>% nlevels
-enroll$year %>% table
-enroll$level.of.education %>% levels
+names(enroll) # variable names
+enroll$country %>% nlevels # number of countries
+enroll$year %>% table # years spanned
+enroll$level.of.education %>% levels # education level
 
 levels(enroll$level.of.education) <- c("Bachelor's or equivalent", "Master's or equivalent", "Doctoral of equivalent", "Total")
 ```
 
-- We have 40 countries observed over 5 years
+- We have 38 countries observed over 5 years (one row is Total, one Europe)
 - 3 levels of education plus total (Bachelor, Master, Doctoral, and Total Grad)
 
 ```{r}
@@ -94,29 +108,38 @@ ggplot(enroll.by.year) +
 enroll.by.country <- enroll %>% group_by(country, sex) %>% summarise(count = sum(n.people, na.rm = T)) %>%
   pivot_wider(values_from = count, names_from = sex, names_prefix = "count_") %>%
   mutate(prop_F = count_F/sum(count_F, count_M))
-
-# recode USA and UK
-enroll.by.country$country <- enroll.by.country$country %>% recode("United States" = "USA", "United Kingdom" = "UK")
 ```
 
 - Enrollment has not changed between 2013 and 2017
 
 ```{r}
-# prop of women enrollment by country
+# prop of enrolled grad students by country
+
+# recode USA and UK
+enroll.by.country$country <- enroll.by.country$country %>% recode("United States" = "USA", "United Kingdom" = "UK")
+
 library(rworldmap)
 map.world <- map_data(map="world")
 world.join <- left_join(map.world, enroll.by.country, by = c("region" = "country"))
 ggplot() +
   geom_map(data = world.join, map = world.join, aes(map_id = region, x = long, y = lat, fill = prop_F)) +
-  scale_fill_gradient(low = "red", high = "green", guide = "colourbar") +
+  scale_fill_gradient(name = "Prop F", low = "red", high = "green", guide = "colourbar") +
   coord_equal() +
-  ggtitle("Proportion of Female enrollment in grad programs, 2013-2017")
+  ggtitle("Graduate program enrollment, 2013-2017") +
+  ylim(-55,NA) +
+  xlab("Longitude") +
+  ylab("Latitude")
 ```
 
-```{r}
+```{r, warning = F}
+# is STEM grad enrollment associated with country equality score?
+
 enroll.by.country %>% arrange(desc(prop_F))
+enroll.equal <- inner_join(enroll.by.country, equality)
+cor(enroll.equal$prop_F, enroll.equal$yr2017)
 ```
 
+Okay, found nothing interesting here.
 
 # Graduation from grad progams
 
@@ -154,4 +177,7 @@ ggplot(enroll.by.gender, aes(y = prop_F)) + geom_boxplot() + theme_bw() + ggtitl
 
 math.pisa %>% group_by(subject) %>% summarise(meanScore = mean(mean.score), count = n())
 ```
+
+
+
 
