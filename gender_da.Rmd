@@ -21,7 +21,7 @@ library(maps)
 enroll <- read.csv("Data/CLEAN_enrollment.csv")
 math.pisa <- read.csv("Data/CLEAN_pisa_math.csv")
 sci.pisa <- read.csv("Data/CLEAN_pisa_science.csv")
-grads <- read.csv("Data/CLEAN_2017_grads_field.csv")
+grads <- read.csv("Data/CLEAN_2017_grads_field_V2.csv")
 earn.deg1 <- read.csv("Data/CLEAN_earnings_degree.csv")
 earn.numeracy <- read.csv("Data/CLEAN_earnings_numeracy.csv")
 
@@ -144,21 +144,42 @@ cor(enroll.equal$prop_F, enroll.equal$yr2017)
 enroll.by.country %>% arrange(desc(prop_F))
 
 # highest prop_F
-enroll.equal %>% arrange(desc(prop_F)) %>% select(country, prop_F, yr2017) %>% head(5)
+enroll.equal %>% arrange(desc(yr2017)) %>% select(country, prop_F, yr2017) %>% head(5)
 
 # lowest prop_F
-enroll.equal %>% arrange(prop_F) %>% select(country, prop_F, yr2017) %>% head(5)
+enroll.equal %>% arrange(yr2017) %>% select(country, prop_F, yr2017) %>% head(5)
 ```
 
 - Nothing interesting enough to report?
 
 
-# Graduation from grad progams
+# Graduation from grad progams (2017)
 
 ```{r}
 names(grads)
+
+# clean labels
+levels(grads$level.of.education) <- c("Bachelor's", "Doctoral", "Master's")
 ```
 
+```{r}
+# grads %>% group_by(level.of.education, country, sex) %>% summarise(pct = sum(percent, na.rm = T)) %>% filter(sex != "T")
+
+# group all STEM and non-STEM fields together
+grads.stem <- grads
+grads.stem$field <- fct_collapse(grads$field,
+                           STEM = levels(grads$field)[c(1:4,6,7,10,11)],
+                           NSTEM = levels(grads$field)[-c(1:4,6,7,10,11)])
+
+ggplot(grads.stem %>% filter(field == "STEM")) +
+  geom_boxplot(aes(x = sex, y = percent, fill = sex)) +
+  facet_grid( ~ level.of.education) +
+  ggtitle("Graduation rates by grad program level and sex")
+
+
+```
+
+- A higher percentage of women finish their programs compared with men, but the difference if basically negligible?
 
 ### (Old code chunks) Enrollment in Graduate Programs
 ```{r}
