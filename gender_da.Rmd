@@ -134,12 +134,24 @@ ggplot() +
 ```{r, warning = F}
 # is STEM grad enrollment associated with country equality score?
 
-enroll.by.country %>% arrange(desc(prop_F))
 enroll.equal <- inner_join(enroll.by.country, equality)
 cor(enroll.equal$prop_F, enroll.equal$yr2017)
 ```
 
-Okay, found nothing interesting here.
+- Okay, found nothing interesting here. But let's look at the best and worst Prop_F countries:
+
+```{r}
+enroll.by.country %>% arrange(desc(prop_F))
+
+# highest prop_F
+enroll.equal %>% arrange(desc(prop_F)) %>% select(country, prop_F, yr2017) %>% head(5)
+
+# lowest prop_F
+enroll.equal %>% arrange(prop_F) %>% select(country, prop_F, yr2017) %>% head(5)
+```
+
+- Nothing interesting enough to report?
+
 
 # Graduation from grad progams
 

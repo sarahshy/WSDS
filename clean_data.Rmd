@@ -20,6 +20,7 @@ enroll <- read.csv("Data/enrollment.csv")
 math.pisa <- read.csv("Data/oecd_pisa_math.csv")
 sci.pisa <- read.csv("Data/oecd_pisa_science.csv")
 grads <- read.csv("Data/2017_grads_field.csv")
+grads.v2 <- read.csv("Data/2017_grads_field2.csv")
 earn.deg <- read.csv("Data/earnings_degree.csv")
 earn.numeracy <- read.csv("Data/earnings_numeracylevel.csv")
 ```
@@ -92,6 +93,16 @@ names(grads.clean) <- tolower(names(grads.clean))
 names(grads.clean)[names(grads.clean) == "country." | names(grads.clean) == "value"] <- c("country", "percent")
 
 write.csv(grads.clean, "Data/CLEAN_2017_grads_field.csv", row.names = F)
+```
+
+# Clean Graduation data version 2
+
+```{r}
+grads.clean2 <- grads.v2 %>% select(Country., SEX, Field, Level.of.education, YEAR, Value, Flags)
+names(grads.clean2) <- tolower(names(grads.clean2))
+names(grads.clean2)[names(grads.clean2) == "country." | names(grads.clean2) == "value"] <- c("country", "percent")
+
+write.csv(grads.clean2, "Data/CLEAN_2017_grads_field_V2.csv", row.names = F)
 ```
 
 # Clean Earnings by Degree data
