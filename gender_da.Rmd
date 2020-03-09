@@ -13,6 +13,8 @@ rm(list = ls())
 # load libraries
 library(tidyverse)
 library(maps)
+library(knitr)
+library(kableExtra)
 ```
 
 ```{r, message = F, warning = F}
@@ -144,10 +146,10 @@ cor(enroll.equal$prop_F, enroll.equal$yr2017)
 enroll.by.country %>% arrange(desc(prop_F))
 
 # highest prop_F
-enroll.equal %>% arrange(desc(yr2017)) %>% select(country, prop_F, yr2017) %>% head(5)
+enroll.equal %>% arrange(desc(yr2017)) %>% select(country, prop_F, yr2017) %>% head(5) %>% kable(condensecol.names = c("country", "prop_F", "equality_score")) %>% kable_styling(bootstrap_options = c("condensed"))
 
 # lowest prop_F
-enroll.equal %>% arrange(yr2017) %>% select(country, prop_F, yr2017) %>% head(5)
+enroll.equal %>% arrange(yr2017) %>% select(country, prop_F, yr2017) %>% head(5) %>% kable(col.names = c("country", "prop_F", "equality_score")) %>% kable_styling(bootstrap_options = c("condensed"))
 ```
 
 - Nothing interesting enough to report?
