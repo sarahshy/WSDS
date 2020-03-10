@@ -216,3 +216,15 @@ math.pisa %>% group_by(subject) %>% summarise(meanScore = mean(mean.score), coun
 
 
 
+```{r}
+library(tidyverse)
+sci.pisa
+table(sci.pisa$time)
+sci.pisa.time <- sci.pisa %>% group_by(time) %>% summarise (meanscore=mean(mean.score), count=n())
+sci.pisa.time
+
+
+```
+
+
+
