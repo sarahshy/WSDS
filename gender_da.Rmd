@@ -216,3 +216,75 @@ math.pisa %>% group_by(subject) %>% summarise(meanScore = mean(mean.score), coun
 
 
 
+```{r}
+library(tidyverse)
+sci.pisa
+sci.pisa.boygirl <- sci.pisa[which(sci.pisa$subject=="BOY" | sci.pisa$subject=="GIRL"),]
+sci.pisa.sex <- sci.pisa.boygirl %>% group_by(time,subject) %>% summarise (meanscore=mean(mean.score), count=n())
+sci.pisa.sex
+ggplot(data=sci.pisa.sex)+ geom_point(mapping=aes(x=time,y=meanscore,color=subject)) +geom_line(mapping=aes(x=time,y=meanscore,color=subject)) 
+
+
+sci.pisa.location <- sci.pisa.boygirl %>% group_by(location,subject) %>% summarise (meanscore=mean(mean.score), count=n())
+sci.pisa.location
+ggplot(data= sci.pisa.location)+ geom_point(mapping=aes(x=location,y=meanscore,color=subject)) 
+
+
+sci.pisa.sex <- spread(sci.pisa.location, subject, meanscore)
+sci.pisa.sex$ind <- (sci.pisa.sex$GIRL>=sci.pisa.sex$BOY)
+
+library(countrycode)
+sci.pisa.sex$country <- countrycode(sci.pisa.sex$location, origin='iso3c',destination = 'country.name')
+sci.pisa.sex$country <- sci.pisa.sex$country %>% recode("United States" = "USA", "United Kingdom" = "UK")
+
+
+library(rworldmap)
+map.world <- map_data(map="world")
+world.join <- left_join(map.world, sci.pisa.sex, by = c("region" = "country"))
+
+ggplot() +
+  geom_map(data = world.join, map = world.join, aes(map_id = region, x = long, y = lat, fill = ind)) 
+ 
+```
+
+
+
+
+```{r}
+library(tidyverse)
+math.pisa
+
+math.pisa.boygirl <- math.pisa[which(math.pisa$subject=="BOY" | math.pisa$subject=="GIRL"),]
+math.pisa.sex <- math.pisa.boygirl %>% group_by(time,subject) %>% summarise (meanscore=mean(mean.score), count=n())
+math.pisa.sex
+ggplot(data=math.pisa.sex)+ geom_point(mapping=aes(x=time,y=meanscore,color=subject)) +geom_line(mapping=aes(x=time,y=meanscore,color=subject)) 
+
+math.pisa.location <- math.pisa.boygirl %>% group_by(location,subject) %>% summarise (meanscore=mean(mean.score), count=n())
+math.pisa.location
+ggplot(data= math.pisa.location)+ geom_point(mapping=aes(x=location,y=meanscore,color=subject)) 
+
+
+math.pisa.sex <- spread(math.pisa.location, subject, meanscore)
+math.pisa.sex$ind <- (math.pisa.sex$GIRL>=math.pisa.sex$BOY)
+
+library(countrycode)
+math.pisa.sex$country <- countrycode(math.pisa.sex$location, origin='iso3c',destination = 'country.name')
+math.pisa.sex$country <- math.pisa.sex$country %>% recode("United States" = "USA", "United Kingdom" = "UK")
+
+
+library(rworldmap)
+map.world <- map_data(map="world")
+world.join <- left_join(map.world, math.pisa.sex, by = c("region" = "country"))
+
+map.world.sub <- subset(world.join, ind=="TRUE")
+  
+ggplot() +
+  geom_map(data = world.join, map = world.join, aes(map_id = region, x = long, y = lat, fill = ind)) 
+ 
+ggplot() +
+  geom_map(data = map.world.sub, map = world.join, aes(map_id = region, x = long, y = lat, fill = ind)) 
+ 
+```
+
+
+
