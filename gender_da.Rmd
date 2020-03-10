@@ -219,7 +219,6 @@ math.pisa %>% group_by(subject) %>% summarise(meanScore = mean(mean.score), coun
 ```{r}
 library(tidyverse)
 sci.pisa
-<<<<<<< HEAD
 sci.pisa.boygirl <- sci.pisa[which(sci.pisa$subject=="BOY" | sci.pisa$subject=="GIRL"),]
 sci.pisa.sex <- sci.pisa.boygirl %>% group_by(time,subject) %>% summarise (meanscore=mean(mean.score), count=n())
 sci.pisa.sex
@@ -284,14 +283,10 @@ ggplot() +
  
 ggplot() +
   geom_map(data = map.world.sub, map = world.join, aes(map_id = region, x = long, y = lat, fill = ind)) 
- 
-=======
+
 table(sci.pisa$time)
 sci.pisa.time <- sci.pisa %>% group_by(time) %>% summarise (meanscore=mean(mean.score), count=n())
 sci.pisa.time
-
-
->>>>>>> 3a05f98c6de37a533cf2f60a6bd52e6dbee3cbfd
 ```
 
 
